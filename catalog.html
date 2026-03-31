@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>De Simone OS — Catalogo</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+<div id="toast"></div>
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/catalog.html" class="nav-item active" title="Catalogo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--ebony-light);border:1.5px solid var(--coral);display:flex;align-items:center;justify-content:center;color:var(--coral);font-family:var(--serif);font-size:12px;font-weight:700;cursor:pointer;" onclick="window.signOutUser()">ADS</div>
+    </div>
+  </aside>
+
+  <!-- LEFT PANEL: Collections -->
+  <div class="left-panel">
+    <div class="panel-header">
+      <div style="font-family:var(--editorial);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:8px;">Atelier</div>
+      <div style="font-family:var(--serif);font-size:16px;color:white;font-weight:700;">Antonino De Simone</div>
+      <div style="font-family:var(--editorial);font-size:13px;color:var(--silver);font-style:italic;margin-top:2px;">Torre del Greco · Dal 1830</div>
+    </div>
+
+    <div style="margin:12px 16px;position:relative;">
+      <svg style="position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:rgba(255,255,255,0.3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="searchInput" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px 7px 30px;font-family:var(--editorial);font-size:13px;color:white;outline:none;" placeholder="Cerca…">
+    </div>
+
+    <div style="padding:12px 16px 6px;font-family:var(--editorial);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);">Collezioni</div>
+    <div id="collectionList"></div>
+
+    <div style="flex:1"></div>
+    <div style="padding:12px 16px;">
+      <button class="btn-primary" id="btnNewArticle" style="width:100%;justify-content:center;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuovo Articolo
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);" id="breadcrumb">Catalogo · Tutti gli articoli</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-left:12px;" id="articleCount"></div>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        <button class="btn-ghost" id="btnExport">Esporta</button>
+        <button class="btn-primary" id="btnNewArticleTop">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuovo Articolo
+        </button>
+      </div>
+    </div>
+    <div class="catalog-area">
+      <div id="articlesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
+    </div>
+  </main>
+
+  <!-- DETAIL PANEL -->
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-inner" id="detailInner"></div>
+  </div>
+
+</div>
+
+<!-- MODAL placeholder — populated by article-form.js -->
+<div id="articleModalRoot"></div>
+
+<!-- PROCESSING TOAST -->
+<div class="processing-toast" id="processingToast">
+  <div class="processing-dot"></div>
+  <span>Pipeline AI avviata…</span>
+  <span style="font-family:var(--mono);font-size:10px;color:var(--coral);margin-left:auto;" id="processingSkuLabel"></span>
+</div>
+
+<script src="config.js"></script>
+<script type="module" src="js/catalog.js"></script>
+</body>
+</html>
