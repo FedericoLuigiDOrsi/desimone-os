@@ -30,12 +30,12 @@ export async function openArticleModal({ onSuccess }) {
 function renderModal() {
   const root = document.getElementById('articleModalRoot')
   root.innerHTML = `
-  <div class="modal-overlay" id="articleModal">
+  <div class="modal-overlay" id="articleModal" role="dialog" aria-modal="true" aria-labelledby="articleModalTitle">
     <div class="modal">
       <div class="modal-header">
         <div>
           <div class="modal-eyebrow">Catalogo · Nuovo articolo</div>
-          <div class="modal-title">Inserimento Articolo</div>
+          <div class="modal-title" id="articleModalTitle">Inserimento Articolo</div>
         </div>
         <button style="background:none;border:none;cursor:pointer;color:var(--text-muted);padding:4px;" onclick="document.getElementById('articleModal').classList.remove('open')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

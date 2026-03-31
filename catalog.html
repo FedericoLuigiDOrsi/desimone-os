@@ -10,21 +10,22 @@
   <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
-<div id="toast"></div>
+<a href="#catalog-main" class="skip-link">Vai al contenuto principale</a>
+<div id="toast" role="status" aria-live="polite"></div>
 <div class="app-shell">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+  <aside class="sidebar" aria-label="Navigazione principale">
+    <div class="sidebar-logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
     </div>
-    <nav class="sidebar-nav">
-      <a href="/catalog.html" class="nav-item active" title="Catalogo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <nav class="sidebar-nav" aria-label="Menu">
+      <a href="/catalog.html" class="nav-item active" aria-label="Catalogo articoli" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       </a>
     </nav>
     <div class="sidebar-bottom">
-      <div style="width:32px;height:32px;border-radius:50%;background:var(--ebony-light);border:1.5px solid var(--coral);display:flex;align-items:center;justify-content:center;color:var(--coral);font-family:var(--serif);font-size:12px;font-weight:700;cursor:pointer;" onclick="window.signOutUser()">ADS</div>
+      <button style="width:32px;height:32px;border-radius:50%;background:var(--ebony-light);border:1.5px solid var(--coral);display:flex;align-items:center;justify-content:center;color:var(--coral);font-family:var(--serif);font-size:12px;font-weight:700;cursor:pointer;" onclick="window.signOutUser()" aria-label="Esci dall'account">ADS</button>
     </div>
   </aside>
 
@@ -38,7 +39,7 @@
 
     <div style="margin:12px 16px;position:relative;">
       <svg style="position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:rgba(255,255,255,0.3);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input id="searchInput" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px 7px 30px;font-family:var(--editorial);font-size:13px;color:white;outline:none;" placeholder="Cerca…">
+      <input id="searchInput" type="search" aria-label="Cerca articoli" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px 7px 30px;font-family:var(--editorial);font-size:13px;color:white;outline:none;" placeholder="Cerca…">
     </div>
 
     <div style="padding:12px 16px 6px;font-family:var(--editorial);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);">Collezioni</div>
@@ -54,8 +55,8 @@
   </div>
 
   <!-- MAIN -->
-  <main class="main">
-    <div class="topbar">
+  <main class="main" id="catalog-main">
+    <div class="topbar" role="toolbar" aria-label="Azioni catalogo">
       <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);" id="breadcrumb">Catalogo · Tutti gli articoli</div>
       <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-left:12px;" id="articleCount"></div>
       <div style="margin-left:auto;display:flex;gap:8px;">
@@ -67,7 +68,7 @@
       </div>
     </div>
     <div class="catalog-area">
-      <div id="articlesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
+      <div id="articlesGrid" role="list" aria-label="Articoli catalogo" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
     </div>
   </main>
 
@@ -82,10 +83,10 @@
 <div id="articleModalRoot"></div>
 
 <!-- PROCESSING TOAST -->
-<div class="processing-toast" id="processingToast">
-  <div class="processing-dot"></div>
+<div class="processing-toast" id="processingToast" role="status" aria-live="polite" aria-label="Stato pipeline AI">
+  <div class="processing-dot" aria-hidden="true"></div>
   <span>Pipeline AI avviata…</span>
-  <span style="font-family:var(--mono);font-size:10px;color:var(--coral);margin-left:auto;" id="processingSkuLabel"></span>
+  <span style="font-family:var(--mono);font-size:10px;color:var(--coral);margin-left:auto;" id="processingSkuLabel" aria-label="SKU articolo"></span>
 </div>
 
 <script src="config.js"></script>

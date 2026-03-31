@@ -26,4 +26,11 @@
   --sidebar-w:     64px;
   --left-panel-w:  280px;
   --topbar-h:      56px;
+
+  /* Z-index scale */
+  --z-base:    10;
+  --z-panel:   20;
+  --z-modal:   200;
+  --z-toast:   300;
+  --z-top:     400;
 }

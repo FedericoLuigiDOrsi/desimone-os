@@ -12,7 +12,7 @@
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
-  z-index: 100;
+  z-index: var(--z-panel);
 }
 
 .sidebar-logo {
@@ -42,9 +42,14 @@
   border-radius: 8px;
   color: var(--silver);
   transition: background 0.15s, color 0.15s;
+  cursor: pointer;
 }
 .nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
 .nav-item.active { background: var(--coral); color: white; }
+.nav-item:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
 .nav-item svg { width: 18px; height: 18px; }
 
 .sidebar-bottom {

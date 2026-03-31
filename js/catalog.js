@@ -68,7 +68,7 @@ function renderGrid(articles) {
     const cover = getCoverPhoto(a.photos)
     const collName = a.collections?.name || ''
     return `
-      <div class="article-card" data-article-id="${a.id}" style="animation-delay:${i * 0.05}s">
+      <div class="article-card" data-article-id="${a.id}" role="listitem" tabindex="0" aria-label="${a.name} — ${collName}" style="animation-delay:${i * 0.05}s">
         <div class="card-photo">
           ${cover
             ? `<img src="${cover}" alt="${a.name}" loading="lazy">`
@@ -95,6 +95,9 @@ function renderGrid(articles) {
 
   grid.querySelectorAll('.article-card').forEach(card => {
     card.addEventListener('click', () => openDetail(card.dataset.articleId))
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(card.dataset.articleId) }
+    })
   })
 }
 
@@ -107,10 +110,10 @@ function openDetail(articleId) {
 
   inner.innerHTML = `
     <div style="aspect-ratio:1;background:var(--ivory);overflow:hidden;flex-shrink:0;">
-      ${cover ? `<img src="${cover}" style="width:100%;height:100%;object-fit:cover;" alt="">` : ''}
+      ${cover ? `<img src="${cover}" style="width:100%;height:100%;object-fit:cover;" alt="${a.name}">` : ''}
     </div>
     <div style="padding:20px;">
-      <div style="font-family:var(--editorial);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:4px;">${a.collections?.name || ''}</div>
+      <div style="font-family:var(--editorial);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:4px;">${a.collections?.name || ''}</div>
       <div style="font-family:var(--serif);font-size:18px;margin-bottom:4px;">${a.name}</div>
       <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-bottom:16px;">${a.sku}</div>
       ${detailRow('Corallo', a.coral?.name || '—')}
