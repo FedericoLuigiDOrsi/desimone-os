@@ -1,3 +1,3 @@
 // config.js — sostituire con valori reali dal Supabase dashboard
-const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co'
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY'
+const SUPABASE_URL = 'https://plhqzhultutixgukcziz.supabase.co'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsaHF6aHVsdHV0aXhndWtjeml6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NzEyNDYsImV4cCI6MjA5MDU0NzI0Nn0.Ed9epuqP87mSCki5ejbxmG0m_Kx9_-elBJ3gNjeplnU'

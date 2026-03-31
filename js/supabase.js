@@ -5,12 +5,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // Auth helpers
 export async function requireAuth() {
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) {
-    window.location.href = '/login.html'
-    return null
-  }
-  return session
+  // AUTH BYPASS — riabilitare in produzione
+  return true
 }
 
 export async function signIn(email, password) {
