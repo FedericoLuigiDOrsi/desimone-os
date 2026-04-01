@@ -151,11 +151,9 @@ function openDetail(articleId) {
       <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-bottom:16px;">${a.sku}</div>
       ${detailRow('Corallo', a.coral?.name || '—')}
       ${detailRow('Metallo', a.metal?.name || '—')}
-      ${detailRow('Canale', a.channel)}
       ${detailRow('Prezzo retail', formatPrice(a.price_retail))}
       ${a.price_wholesale ? detailRow('Prezzo ingrosso', formatPrice(a.price_wholesale)) : ''}
-      ${detailRow('Stock retail', a.stock_retail + ' pz')}
-      ${a.stock_wholesale ? detailRow('Stock ingrosso', a.stock_wholesale + ' pz') : ''}
+      ${detailRow('Stock', (a.stock_retail + a.stock_wholesale) + ' pz')}
       ${detailRow('Stato', statusLabel(a.status))}
     </div>
     <div style="padding:16px 20px;border-top:1px solid var(--ivory-dark);display:flex;flex-direction:column;gap:8px;">

@@ -68,15 +68,7 @@ function renderModal() {
               </select>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label class="field-label">Canale</label>
-              <select class="field-select" id="f_channel">
-                <option value="both">Retail + Ingrosso</option>
-                <option value="retail">Solo Retail</option>
-                <option value="wholesale">Solo Ingrosso</option>
-              </select>
-            </div>
+          <div class="form-row full">
             <div class="form-field">
               <label class="field-label">SKU (anteprima)</label>
               <div class="sku-preview empty" id="skuPreview">—-—-—-###</div>
@@ -117,14 +109,10 @@ function renderModal() {
               <input type="number" class="field-input" id="f_price_wholesale" placeholder="0" step="1" min="0">
             </div>
           </div>
-          <div class="form-row triple">
+          <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Stock retail</label>
-              <input type="number" class="field-input" id="f_stock_retail" placeholder="0" min="0">
-            </div>
-            <div class="form-field">
-              <label class="field-label">Stock ingrosso</label>
-              <input type="number" class="field-input" id="f_stock_wholesale" placeholder="0" min="0">
+              <label class="field-label">Stock</label>
+              <input type="number" class="field-input" id="f_stock" placeholder="0" min="0">
             </div>
             <div class="form-field">
               <label class="field-label">Peso (g)</label>
@@ -277,9 +265,9 @@ function setupFormListeners() {
         sku: skuData,
         price_retail: Number(document.getElementById('f_price_retail').value) || null,
         price_wholesale: Number(document.getElementById('f_price_wholesale').value) || null,
-        stock_retail: Number(document.getElementById('f_stock_retail').value) || 0,
-        stock_wholesale: Number(document.getElementById('f_stock_wholesale').value) || 0,
-        channel: document.getElementById('f_channel').value,
+        stock_retail: Number(document.getElementById('f_stock').value) || 0,
+        stock_wholesale: 0,
+        channel: 'both',
         notes: document.getElementById('f_notes').value.trim() || null,
         measurements: Object.keys(measurements).length ? measurements : null
       })
