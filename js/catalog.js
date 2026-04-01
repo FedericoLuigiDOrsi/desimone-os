@@ -25,7 +25,7 @@ async function loadCollections() {
 
   collections.forEach(c => {
     const colorMap = { 'intreccio': '#C94030', 'abbraccio': '#E8A898', 'trame-di-corallo': '#D4C4B8', 'cielo-stellato': '#C8C8C8' }
-    list.innerHTML += renderCollectionItem({ ...c, color: colorMap[c.slug] || '#C94030' }, false)
+    list.innerHTML += renderCollectionItem({ ...c, color: c.description_en || colorMap[c.slug] || '#C94030' }, false)
   })
 
   list.addEventListener('click', e => {
@@ -203,14 +203,36 @@ function setupListeners() {
 
   document.getElementById('btnNewArticleTop').addEventListener('click', openModal)
 
-  document.getElementById('btnNewCollection').addEventListener('click', async () => {
-    const name = prompt('Nome della nuova collezione:')
-    if (!name) return
-    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  document.getElementById('btnNewCollection').addEventListener('click', () => {
+    document.getElementById('f_coll_name').value = ''
+    document.getElementById('f_coll_code').value = ''
+    document.getElementById('f_coll_color').value = '#C94030'
+    document.getElementById('collectionModal').classList.add('open')
+  })
+
+  document.getElementById('btnSaveCollection').addEventListener('click', async () => {
+    const name = document.getElementById('f_coll_name').value.trim()
+    const code = document.getElementById('f_coll_code').value.trim().toUpperCase()
+    const color = document.getElementById('f_coll_color').value
+
+    if (!name || code.length !== 4) {
+      showToast('Nome richiesto e codice di 4 lettere esatte')
+      return
+    }
+
+    const baseSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    const slug = `${code.toLowerCase()}-${baseSlug}`
+
     try {
-      const { error } = await supabase.from('collections').insert({ name, slug })
+      const { error } = await supabase.from('collections').insert({
+        name,
+        slug,
+        description_en: color,
+        description_it: code
+      })
       if (error) throw error
       showToast('Collezione creata con successo')
+      document.getElementById('collectionModal').classList.remove('open')
       await loadCollections()
     } catch (err) {
       showToast('Errore: ' + err.message)

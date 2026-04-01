@@ -24,7 +24,7 @@ export async function signOut() {
 export async function getCollections() {
   const { data, error } = await supabase
     .from('collections')
-    .select('id, name, slug, channel, sort_order')
+    .select('id, name, slug, channel, sort_order, description_it, description_en')
     .is('deleted_at', null)
     .order('sort_order')
   if (error) throw error

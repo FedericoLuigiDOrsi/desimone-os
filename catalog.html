@@ -82,6 +82,50 @@
 <!-- MODAL placeholder — populated by article-form.js -->
 <div id="articleModalRoot"></div>
 
+<!-- COLLECTION MODAL -->
+<div class="modal-overlay" id="collectionModal" role="dialog" aria-modal="true" aria-labelledby="collectionModalTitle">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow">Catalogo · Impostazioni</div>
+        <div class="modal-title" id="collectionModalTitle">Nuova Collezione</div>
+      </div>
+      <button style="background:none;border:none;cursor:pointer;color:var(--text-muted);padding:4px;" onclick="document.getElementById('collectionModal').classList.remove('open')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="field-label">Nome collezione <span class="field-required">*</span></label>
+          <input type="text" class="field-input" id="f_coll_name" placeholder="es. Estate">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label">Codice SKU (4 lettere) <span class="field-required">*</span></label>
+          <input type="text" class="field-input" id="f_coll_code" maxlength="4" placeholder="es. ESTA" style="text-transform:uppercase;">
+        </div>
+        <div class="form-field">
+          <label class="field-label">Colore badge <span class="field-required">*</span></label>
+          <select class="field-select" id="f_coll_color">
+            <option value="#C94030">Rosso Corallo</option>
+            <option value="#A8331F">Rosso Scuro</option>
+            <option value="#E8A898">Rosa Pastel</option>
+            <option value="#D4C4B8">Beige / Chiaro</option>
+            <option value="#C9A84C">Oro</option>
+            <option value="#B8B4AE">Argento / Grigio</option>
+            <option value="#2A2620">Ebano / Scuro</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end;">
+      <button class="btn-primary" id="btnSaveCollection">Salva Collezione</button>
+    </div>
+  </div>
+</div>
+
 <!-- PROCESSING TOAST -->
 <div class="processing-toast" id="processingToast" role="status" aria-live="polite" aria-label="Stato pipeline AI">
   <div class="processing-dot" aria-hidden="true"></div>
