@@ -57,7 +57,13 @@
   <!-- MAIN -->
   <main class="main" id="catalog-main">
     <div class="topbar" role="toolbar" aria-label="Azioni catalogo">
-      <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);" id="breadcrumb">Catalogo · Tutti gli articoli</div>
+      <div style="display:flex;align-items:center;">
+        <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);" id="breadcrumb">Catalogo · Tutti gli articoli</div>
+        <div id="collectionActions" style="display:none; gap:6px; margin-left:12px;">
+          <button class="btn-ghost" id="btnEditCollection" style="padding:2px 8px; font-size:11px;">Modifica</button>
+          <button class="btn-ghost" id="btnDeleteCollection" style="padding:2px 8px; font-size:11px; color:var(--coral);">Elimina</button>
+        </div>
+      </div>
       <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-left:12px;" id="articleCount"></div>
       <div style="margin-left:auto;display:flex;gap:8px;">
         <button class="btn-ghost" id="btnExport">Esporta</button>

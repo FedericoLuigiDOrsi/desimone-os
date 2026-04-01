@@ -6,7 +6,9 @@ import { openArticleModal } from './article-form.js'
 window.signOutUser = signOut
 
 let allArticles = []
+let currentCollections = []
 let currentCollectionId = null
+let isEditingCollection = false
 
 async function init() {
   await requireAuth()
@@ -18,6 +20,7 @@ async function init() {
 
 async function loadCollections() {
   const collections = await getCollections()
+  currentCollections = collections
   const list = document.getElementById('collectionList')
 
   // "Tutti" item
@@ -32,6 +35,11 @@ async function loadCollections() {
     const item = e.target.closest('[data-collection-id]')
     if (!item) return
     currentCollectionId = item.dataset.collectionId === 'null' ? null : item.dataset.collectionId
+    
+    // Toggle actions in topbar
+    const actions = document.getElementById('collectionActions')
+    if (actions) actions.style.display = currentCollectionId ? 'flex' : 'none'
+
     list.querySelectorAll('[data-collection-id]').forEach(el => el.classList.remove('active'))
     item.classList.add('active')
     document.getElementById('breadcrumb').textContent = `Catalogo · ${item.dataset.collectionName}`
@@ -204,11 +212,54 @@ function setupListeners() {
   document.getElementById('btnNewArticleTop').addEventListener('click', openModal)
 
   document.getElementById('btnNewCollection').addEventListener('click', () => {
+    isEditingCollection = false
+    document.getElementById('collectionModalTitle').textContent = 'Nuova Collezione'
     document.getElementById('f_coll_name').value = ''
     document.getElementById('f_coll_code').value = ''
     document.getElementById('f_coll_color').value = '#C94030'
     document.getElementById('collectionModal').classList.add('open')
   })
+
+  const btnEditCollection = document.getElementById('btnEditCollection')
+  if (btnEditCollection) {
+    btnEditCollection.addEventListener('click', () => {
+      const coll = currentCollections.find(c => c.id === currentCollectionId)
+      if (!coll) return
+      isEditingCollection = true
+      document.getElementById('collectionModalTitle').textContent = 'Modifica Collezione'
+      document.getElementById('f_coll_name').value = coll.name || ''
+      document.getElementById('f_coll_code').value = coll.description_it || (coll.slug ? coll.slug.substring(0, 4).toUpperCase() : '')
+      document.getElementById('f_coll_color').value = Object.keys(document.getElementById('f_coll_color').options).map(k=>document.getElementById('f_coll_color').options[k].value).includes(coll.description_en) ? coll.description_en : '#C94030'
+      document.getElementById('collectionModal').classList.add('open')
+    })
+  }
+
+  const btnDeleteCollection = document.getElementById('btnDeleteCollection')
+  if (btnDeleteCollection) {
+    btnDeleteCollection.addEventListener('click', async () => {
+      if (!confirm('ATTENZIONE: Eliminando questa collezione, tutti gli articoli al suo interno verranno disabilitati in via definitiva (Soft-Delete). Vuoi procedere?')) return
+      try {
+        const relatedArticles = allArticles.filter(a => a.collection_id === currentCollectionId)
+        const delDate = new Date().toISOString()
+        for (const a of relatedArticles) {
+          await supabase.from('articles').update({ deleted_at: delDate }).eq('id', a.id)
+        }
+        const coll = currentCollections.find(c => c.id === currentCollectionId)
+        await supabase.from('collections').update({ 
+          deleted_at: delDate, 
+          slug: `${coll.slug}-del-${Date.now()}`
+        }).eq('id', currentCollectionId)
+        showToast('Collezione eliminata')
+        currentCollectionId = null
+        document.getElementById('collectionActions').style.display = 'none'
+        document.getElementById('breadcrumb').textContent = 'Catalogo · Tutti gli articoli'
+        await loadCollections()
+        await loadArticles()
+      } catch (err) {
+        showToast("Errore durante l'eliminazione: " + err.message)
+      }
+    })
+  }
 
   document.getElementById('btnSaveCollection').addEventListener('click', async () => {
     const name = document.getElementById('f_coll_name').value.trim()
@@ -224,16 +275,43 @@ function setupListeners() {
     const slug = `${code.toLowerCase()}-${baseSlug}`
 
     try {
-      const { error } = await supabase.from('collections').insert({
-        name,
-        slug,
-        description_en: color,
-        description_it: code
-      })
-      if (error) throw error
-      showToast('Collezione creata con successo')
+      if (isEditingCollection) {
+        if (!confirm('Avviso: Modificando la collezione, SKU e Nome di tutti i suoi articoli verranno ricalcolati e sovrascritti. Continuare?')) return
+        const coll = currentCollections.find(c => c.id === currentCollectionId)
+        const oldCode = coll.description_it || coll.slug.substring(0, 4).toUpperCase()
+
+        const { error } = await supabase.from('collections').update({
+          name, slug, description_en: color, description_it: code
+        }).eq('id', currentCollectionId)
+        if (error) throw error
+
+        const relatedArticles = allArticles.filter(a => a.collection_id === currentCollectionId)
+        for (const a of relatedArticles) {
+          let updatedSku = a.sku
+          if (code !== oldCode) {
+            updatedSku = code + a.sku.substring(4)
+          }
+          const pType = a.product_type || ''
+          const pTypeName = pType ? pType.charAt(0).toUpperCase() + pType.slice(1) : ''
+          const l = a.measurements?.length_cm ? ` ${a.measurements.length_cm}cm` : ''
+          const updatedName = `${pTypeName} ${name}${l}`.trim()
+
+          if (updatedName !== a.name || updatedSku !== a.sku) {
+            await supabase.from('articles').update({ name: updatedName, sku: updatedSku }).eq('id', a.id)
+          }
+        }
+        showToast('Collezione aggiornata con successo')
+      } else {
+        const { error } = await supabase.from('collections').insert({
+          name, slug, description_en: color, description_it: code
+        })
+        if (error) throw error
+        showToast('Collezione creata con successo')
+      }
+      
       document.getElementById('collectionModal').classList.remove('open')
       await loadCollections()
+      await loadArticles(currentCollectionId)
     } catch (err) {
       showToast('Errore: ' + err.message)
     }
