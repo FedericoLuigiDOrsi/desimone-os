@@ -72,6 +72,30 @@ export async function insertArticle(fields) {
   return data
 }
 
+export async function updateArticle(id, fields) {
+  const { data, error } = await supabase
+    .from('articles')
+    .update({ ...fields, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function getArticleById(id) {
+  const { data, error } = await supabase
+    .from('articles')
+    .select(`
+      *,
+      collections(name, slug)
+    `)
+    .eq('id', id)
+    .single()
+  if (error) throw error
+  return data
+}
+
 export async function uploadPhoto(file, articleId) {
   const ext = file.name.split('.').pop()
   const path = `raw/${articleId}/${crypto.randomUUID()}.${ext}`
