@@ -49,7 +49,8 @@ export async function getArticles(collectionId = null) {
       collections(name, slug),
       coral:materials!coral_material_id(name, code),
       metal:materials!metal_material_id(name, code),
-      photos(id, public_url, is_cover, photo_type, sort_order)
+      photos(id, public_url, is_cover, photo_type, sort_order),
+      measurements
     `)
     .is('deleted_at', null)
     .order('created_at', { ascending: false })

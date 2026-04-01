@@ -57,6 +57,21 @@ async function loadArticles(collectionId = null) {
   renderGrid(allArticles)
 }
 
+function getBadgeStyle(name, type) {
+  if (!name) return ''
+  const n = name.toLowerCase()
+  if (type === 'coral') {
+    if (n.includes('rosa')) return 'background:var(--coral-pink);color:white;'
+    if (n.includes('bianco')) return 'background:#FCFCFC;color:var(--text-secondary);box-shadow:inset 0 0 0 1px #EAEAEA;'
+    if (n.includes('rosso') || n.includes('sciacca')) return 'background:rgba(201,64,48,0.1);color:var(--coral-dark);'
+  } else if (type === 'metal') {
+    if (n.includes('giallo')) return 'background:rgba(201,168,76,0.15);color:#8B7330;'
+    if (n.includes('bianco') || n.includes('argento')) return 'background:#F3F3F3;color:var(--text-secondary);'
+    if (n.includes('rosa')) return 'background:var(--coral-pink);color:white;'
+  }
+  return 'background:var(--ivory);color:var(--text-secondary);'
+}
+
 function renderGrid(articles) {
   const grid = document.getElementById('articlesGrid')
   if (articles.length === 0) {
@@ -67,11 +82,18 @@ function renderGrid(articles) {
   grid.innerHTML = articles.map((a, i) => {
     const cover = getCoverPhoto(a.photos)
     const collName = a.collections?.name || ''
+    
+    const pType = a.product_type || ''
+    const pTypeName = pType ? pType.charAt(0).toUpperCase() + pType.slice(1) : ''
+    const l = a.measurements?.length_cm ? ` ${a.measurements.length_cm}cm` : ''
+    const computedName = `${pTypeName} ${collName}${l}`.trim()
+    const dispName = computedName || a.name
+
     return `
-      <div class="article-card" data-article-id="${a.id}" role="listitem" tabindex="0" aria-label="${a.name} — ${collName}" style="animation-delay:${i * 0.05}s">
+      <div class="article-card" data-article-id="${a.id}" role="listitem" tabindex="0" aria-label="${dispName} — ${collName}" style="animation-delay:${i * 0.05}s">
         <div class="card-photo">
           ${cover
-            ? `<img src="${cover}" alt="${a.name}" loading="lazy">`
+            ? `<img src="${cover}" alt="${dispName}" loading="lazy">`
             : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--ivory-dark);">
                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--coral-white)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                </div>`}
@@ -79,15 +101,20 @@ function renderGrid(articles) {
         </div>
         <div class="card-body">
           <div class="card-collection">${collName}</div>
-          <div class="card-name">${a.name}</div>
+          <div class="card-name">${dispName}</div>
           <div class="card-sku">${a.sku}</div>
           <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
-            ${a.coral ? `<span style="padding:2px 6px;background:var(--ivory);border-radius:2px;font-family:var(--editorial);font-size:10px;color:var(--text-secondary);">${a.coral.name}</span>` : ''}
-            ${a.metal ? `<span style="padding:2px 6px;background:var(--ivory);border-radius:2px;font-family:var(--editorial);font-size:10px;color:var(--text-secondary);">${a.metal.name}</span>` : ''}
+            ${a.coral ? `<span style="padding:2px 6px;border-radius:2px;font-family:var(--editorial);font-size:10px;${getBadgeStyle(a.coral.name, 'coral')}">${a.coral.name}</span>` : ''}
+            ${a.metal ? `<span style="padding:2px 6px;border-radius:2px;font-family:var(--editorial);font-size:10px;${getBadgeStyle(a.metal.name, 'metal')}">${a.metal.name}</span>` : ''}
           </div>
-          <div style="font-family:var(--editorial);font-size:13px;font-style:italic;">
-            ${formatPrice(a.price_retail)}
-            ${a.price_wholesale ? `<span style="font-size:10px;color:var(--text-muted);font-style:normal;font-family:var(--mono);margin-left:6px;">${formatPrice(a.price_wholesale)} ingr.</span>` : ''}
+          <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+            <div style="font-family:var(--editorial);font-size:13px;font-style:italic;">
+              ${formatPrice(a.price_retail)}
+              ${a.price_wholesale ? `<span style="font-size:10px;color:var(--text-muted);font-style:normal;font-family:var(--mono);margin-left:6px;">${formatPrice(a.price_wholesale)} ingr.</span>` : ''}
+            </div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);white-space:nowrap;">
+              ${a.stock_retail + a.stock_wholesale > 0 ? `${a.stock_retail + a.stock_wholesale} pz disp.` : 'Esaurito'}
+            </div>
           </div>
         </div>
       </div>`
@@ -108,13 +135,19 @@ function openDetail(articleId) {
   const inner = document.getElementById('detailInner')
   const cover = getCoverPhoto(a.photos)
 
+  const pType = a.product_type || ''
+  const pTypeName = pType ? pType.charAt(0).toUpperCase() + pType.slice(1) : ''
+  const l = a.measurements?.length_cm ? ` ${a.measurements.length_cm}cm` : ''
+  const computedName = `${pTypeName} ${a.collections?.name || ''}${l}`.trim()
+  const dispName = computedName || a.name
+
   inner.innerHTML = `
     <div style="aspect-ratio:1;background:var(--ivory);overflow:hidden;flex-shrink:0;">
-      ${cover ? `<img src="${cover}" style="width:100%;height:100%;object-fit:cover;" alt="${a.name}">` : ''}
+      ${cover ? `<img src="${cover}" style="width:100%;height:100%;object-fit:cover;" alt="${dispName}">` : ''}
     </div>
     <div style="padding:20px;">
       <div style="font-family:var(--editorial);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--coral);margin-bottom:4px;">${a.collections?.name || ''}</div>
-      <div style="font-family:var(--serif);font-size:18px;margin-bottom:4px;">${a.name}</div>
+      <div style="font-family:var(--serif);font-size:18px;margin-bottom:4px;">${dispName}</div>
       <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-bottom:16px;">${a.sku}</div>
       ${detailRow('Corallo', a.coral?.name || '—')}
       ${detailRow('Metallo', a.metal?.name || '—')}

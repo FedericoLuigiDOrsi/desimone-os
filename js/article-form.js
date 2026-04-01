@@ -61,10 +61,6 @@ function renderModal() {
           </div>
           <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Nome articolo <span class="field-required">*</span></label>
-              <input type="text" class="field-input" id="f_name" placeholder="es. Bracciale Napoli">
-            </div>
-            <div class="form-field">
               <label class="field-label">Tipo prodotto <span class="field-required">*</span></label>
               <select class="field-select" id="f_type">
                 <option value="">Seleziona…</option>
@@ -227,7 +223,6 @@ function setupFormListeners() {
   function validateStep(s) {
     if (s === 1) {
       if (!document.getElementById('f_collection').value) { showToast('Seleziona una collezione'); return false }
-      if (!document.getElementById('f_name').value.trim()) { showToast('Inserisci il nome articolo'); return false }
       if (!document.getElementById('f_type').value) { showToast('Seleziona il tipo prodotto'); return false }
     }
     if (s === 2) {
@@ -267,10 +262,16 @@ function setupFormListeners() {
       if (h) measurements.height_cm = Number(h)
       if (wt) measurements.weight_g = Number(wt)
 
+      const collSel = document.getElementById('f_collection')
+      const collName = collSel.options[collSel.selectedIndex].text
+      const pType = document.getElementById('f_type').value
+      const pTypeName = pType.charAt(0).toUpperCase() + pType.slice(1)
+      const dynamicName = `${pTypeName} ${collName}${l ? ' ' + l + 'cm' : ''}`
+
       const article = await insertArticle({
         collection_id: collId,
-        name: document.getElementById('f_name').value.trim(),
-        product_type: document.getElementById('f_type').value,
+        name: dynamicName,
+        product_type: pType,
         coral_material_id: coralId,
         metal_material_id: metalId,
         sku: skuData,
