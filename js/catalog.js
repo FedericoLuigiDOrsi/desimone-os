@@ -170,8 +170,21 @@ function setupListeners() {
     }
   })
 
-  document.getElementById('btnNewArticle').addEventListener('click', openModal)
   document.getElementById('btnNewArticleTop').addEventListener('click', openModal)
+
+  document.getElementById('btnNewCollection').addEventListener('click', async () => {
+    const name = prompt('Nome della nuova collezione:')
+    if (!name) return
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    try {
+      const { error } = await supabase.from('collections').insert({ name, slug })
+      if (error) throw error
+      showToast('Collezione creata con successo')
+      await loadCollections()
+    } catch (err) {
+      showToast('Errore: ' + err.message)
+    }
+  })
 
   document.getElementById('searchInput').addEventListener('input', debounce(e => {
     const q = e.target.value.toLowerCase()
