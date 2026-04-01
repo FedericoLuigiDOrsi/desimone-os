@@ -8,13 +8,13 @@ INSERT INTO collections (name, slug, channel, sort_order) VALUES
 -- Materiali — Corallo
 INSERT INTO materials (name, code, type) VALUES
   ('Corallo Rosso del Mediterraneo', 'CR',  'coral'),
+  ('Corallo Rosso Sciacca',          'CS',  'coral'),
   ('Corallo Rosa',                   'RP',  'coral'),
-  ('Corallo Bianco',                 'RB',  'coral'),
-  ('Corallo Nero',                   'RN',  'coral');
+  ('Corallo Bianco',                 'RB',  'coral');
 
 -- Materiali — Metallo
 INSERT INTO materials (name, code, type) VALUES
-  ('Oro 18 carati',     'AU',  'metal'),
+  ('Oro Giallo 18k',     'AU',  'metal'),
   ('Argento 925',       'AG',  'metal'),
   ('Oro Bianco 18k',    'AUB', 'metal'),
   ('Oro Rosa 18k',      'AUR', 'metal');

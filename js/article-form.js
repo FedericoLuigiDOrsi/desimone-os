@@ -68,7 +68,7 @@ function renderModal() {
               <label class="field-label">Tipo prodotto <span class="field-required">*</span></label>
               <select class="field-select" id="f_type">
                 <option value="">Seleziona…</option>
-                ${['bracciale','collana','anello','orecchini','spilla','ciondolo','altro'].map(t => `<option value="${t}">${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}
+                ${['bracciale', 'collana', 'anello', 'orecchini', 'spilla', 'ciondolo', 'altro'].map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('')}
               </select>
             </div>
           </div>
@@ -104,7 +104,7 @@ function renderModal() {
               </select>
             </div>
             <div class="form-field">
-              <label class="field-label">Tipo metallo <span class="field-required">*</span></label>
+              <label class="field-label">Materiale montatura <span class="field-required">*</span></label>
               <select class="field-select" id="f_metal">
                 <option value="">Seleziona…</option>
                 ${metals.map(m => `<option value="${m.id}" data-code="${m.code}">${m.name}</option>`).join('')}
@@ -137,15 +137,15 @@ function renderModal() {
           </div>
           <div class="form-row triple">
             <div class="form-field">
-              <label class="field-label">Larghezza (mm)</label>
+              <label class="field-label">Larghezza (cm)</label>
               <input type="number" class="field-input" id="f_width" placeholder="—">
             </div>
             <div class="form-field">
-              <label class="field-label">Lunghezza (mm)</label>
+              <label class="field-label">Lunghezza (cm)</label>
               <input type="number" class="field-input" id="f_length" placeholder="—">
             </div>
             <div class="form-field">
-              <label class="field-label">Altezza (mm)</label>
+              <label class="field-label">Altezza (cm)</label>
               <input type="number" class="field-input" id="f_height" placeholder="—">
             </div>
           </div>
@@ -181,12 +181,12 @@ function setupFormListeners() {
   const stepLabels = ['Identità articolo', 'Materiali & Prezzi', 'Foto prodotto']
 
   function updateStep() {
-    [1,2,3].forEach(i => {
+    [1, 2, 3].forEach(i => {
       document.getElementById(`step${i}Content`).style.display = i === step ? 'block' : 'none'
       const tab = document.getElementById(`tab${i}`)
       tab.className = 'step-tab' + (i === step ? ' active' : i < step ? ' done' : '')
     })
-    document.getElementById('stepLabel').textContent = `Step ${step} di 3 — ${stepLabels[step-1]}`
+    document.getElementById('stepLabel').textContent = `Step ${step} di 3 — ${stepLabels[step - 1]}`
     document.getElementById('btnBack').style.display = step > 1 ? '' : 'none'
     document.getElementById('btnNext').textContent = step === 3 ? 'Salva & Avvia Pipeline ✦' : 'Avanti →'
     updateSkuPreview()
@@ -262,9 +262,9 @@ function setupFormListeners() {
       const l = document.getElementById('f_length').value
       const h = document.getElementById('f_height').value
       const wt = document.getElementById('f_weight').value
-      if (w) measurements.width_mm = Number(w)
-      if (l) measurements.length_mm = Number(l)
-      if (h) measurements.height_mm = Number(h)
+      if (w) measurements.width_cm = Number(w)
+      if (l) measurements.length_cm = Number(l)
+      if (h) measurements.height_cm = Number(h)
       if (wt) measurements.weight_g = Number(wt)
 
       const article = await insertArticle({
@@ -293,7 +293,7 @@ function setupFormListeners() {
       document.getElementById('articleModal').classList.remove('open')
       if (onSuccessCallback) onSuccessCallback(article)
 
-    } catch(e) {
+    } catch (e) {
       console.error(e)
       showToast('Errore durante il salvataggio: ' + e.message)
       btn.textContent = 'Salva & Avvia Pipeline ✦'
