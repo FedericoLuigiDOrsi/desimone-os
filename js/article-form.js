@@ -97,7 +97,7 @@ function renderModal() {
         <div id="step2Content" style="display:none;">
           <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Tipo corallo <span class="field-required">*</span></label>
+              <label class="field-label">Corallo <span class="field-required">*</span></label>
               <select class="field-select" id="f_coral">
                 <option value="">Seleziona…</option>
                 ${corals.map(m => `<option value="${m.id}" data-code="${m.code}">${m.name}</option>`).join('')}

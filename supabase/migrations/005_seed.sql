@@ -15,6 +15,6 @@ INSERT INTO materials (name, code, type) VALUES
 -- Materiali — Metallo
 INSERT INTO materials (name, code, type) VALUES
   ('Oro Giallo 18k',     'AU',  'metal'),
-  ('Argento 925',       'AG',  'metal'),
-  ('Oro Bianco 18k',    'AUB', 'metal'),
-  ('Oro Rosa 18k',      'AUR', 'metal');
+  ('Argento 925',        'AG',  'metal'),
+  ('Oro Bianco 18k',     'AUB', 'metal'),
+  ('Oro Rosa 18k',       'AUR', 'metal');
