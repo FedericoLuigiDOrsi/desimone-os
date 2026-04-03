@@ -63,11 +63,10 @@ function renderCollectionItem(c, isActive) {
   const countMatch = allArticles.filter(a => !c.id || a.collection_id === c.id).length
   return `
     <div data-collection-id="${c.id}" data-collection-name="${c.name}"
-         style="margin:2px 10px;padding:8px 10px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.12s;${isActive ? 'background:rgba(201,64,48,0.15);' : ''}"
-         class="${isActive ? 'active' : ''}">
-      <div style="width:8px;height:8px;border-radius:50%;background:${c.color};flex-shrink:0;"></div>
-      <span style="font-family:var(--editorial);font-size:13px;color:${isActive ? 'white' : 'rgba(255,255,255,0.75)'};flex:1;">${c.name}</span>
-      <span style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3);">${countMatch}</span>
+         class="collection-item${isActive ? ' active' : ''}">
+      <div class="collection-dot" style="background:${c.color};"></div>
+      <span class="collection-name">${c.name}</span>
+      <span class="collection-count">${countMatch}</span>
     </div>`
 }
 

@@ -2,6 +2,7 @@ const CACHE_NAME = 'desimone-os-v1'
 
 const SHELL_ASSETS = [
   '/catalog.html',
+  '/smontato.html',
   '/article.html',
   '/login.html',
   '/config.js',
@@ -11,11 +12,14 @@ const SHELL_ASSETS = [
   '/css/components.css',
   '/css/mobile.css',
   '/js/catalog.js',
+  '/js/smontato.js',
+  '/js/raw-form.js',
   '/js/supabase.js',
   '/js/article-form.js',
   '/js/article.js',
   '/js/photo-upload.js',
   '/js/utils.js',
+  '/js/pwa.js',
 ]
 
 // Install: pre-cache shell assets

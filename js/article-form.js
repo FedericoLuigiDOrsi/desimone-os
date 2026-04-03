@@ -70,6 +70,13 @@ function renderModal() {
           </div>
           <div class="form-row full">
             <div class="form-field">
+              <label class="field-label">Nome <span style="color:var(--text-muted);font-style:italic;">— opzionale</span></label>
+              <input type="text" class="field-input" id="f_name" placeholder="es. Fantasia, Mare, Etnico…">
+              <span class="field-error" style="display:none;" id="namePreview"></span>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-field">
               <label class="field-label">SKU (anteprima)</label>
               <div class="sku-preview empty" id="skuPreview">—-—-—-###</div>
             </div>
@@ -205,6 +212,25 @@ function setupFormListeners() {
   document.getElementById('f_collection').addEventListener('change', updateSkuPreview)
   document.getElementById('f_coral')?.addEventListener('change', updateSkuPreview)
   document.getElementById('f_metal')?.addEventListener('change', updateSkuPreview)
+  document.getElementById('f_type')?.addEventListener('change', updateNamePreview)
+  document.getElementById('f_name')?.addEventListener('input', updateNamePreview)
+
+  function updateNamePreview() {
+    const collSel = document.getElementById('f_collection')
+    const collName = collSel.options[collSel.selectedIndex]?.text || ''
+    const pType = document.getElementById('f_type').value
+    const pTypeName = pType ? pType.charAt(0).toUpperCase() + pType.slice(1) : ''
+    const customName = document.getElementById('f_name')?.value.trim() || ''
+    if (!pTypeName && !collName) return
+    const preview = [pTypeName, collName, customName].filter(Boolean).join(' ')
+    const el = document.getElementById('namePreview')
+    if (el) {
+      el.textContent = preview ? `Anteprima: “${preview}”` : ''
+      el.style.display = preview ? 'block' : 'none'
+      el.style.color = 'var(--text-muted)'
+      el.style.fontStyle = 'italic'
+    }
+  }
 
   document.getElementById('btnNext').addEventListener('click', async () => {
     if (step < 3) {
@@ -266,7 +292,9 @@ function setupFormListeners() {
       const collName = collSel.options[collSel.selectedIndex].text
       const pType = document.getElementById('f_type').value
       const pTypeName = pType.charAt(0).toUpperCase() + pType.slice(1)
-      const dynamicName = `${pTypeName} ${collName}${l ? ' ' + l + 'cm' : ''}`
+      const customName = document.getElementById('f_name')?.value.trim() || ''
+      const dynamicName = [pTypeName, collName, customName].filter(Boolean).join(' ') +
+        (l ? ` ${l}cm` : '')
 
       const article = await insertArticle({
         collection_id: collId,
