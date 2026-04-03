@@ -140,6 +140,18 @@ function renderModal() {
           <p style="font-family:var(--editorial);font-style:italic;font-size:13px;color:var(--text-muted);margin-bottom:16px;">
             Le foto raw verranno elaborate automaticamente: rimozione sfondo e generazione descrizioni in IT/EN/FR.
           </p>
+
+          <!-- Pulsante fotocamera — visibile solo su mobile via CSS -->
+          <label id="btnCameraMobile" class="btn-camera-mobile" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Scatta Foto
+            <input type="file" accept="image/*" capture="environment" multiple
+                   style="position:absolute;opacity:0;width:0;height:0;" id="cameraInput">
+          </label>
+
           <div class="upload-zone">
             <svg style="width:40px;height:40px;margin:0 auto 12px;display:block;color:var(--text-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             <div style="font-family:var(--editorial);font-size:14px;color:var(--text-secondary);margin-bottom:4px;">Trascina le foto qui o clicca per sfogliare</div>

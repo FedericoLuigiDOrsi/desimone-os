@@ -2,12 +2,25 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>De Simone OS — Catalogo</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1A1814">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="De Simone">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- SEO -->
+  <meta name="description" content="Atelier Antonino De Simone — Archivio catalogo articoli, Torre del Greco dal 1830">
+
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile.css">
 </head>
 <body>
 <a href="#catalog-main" class="skip-link">Vai al contenuto principale</a>
@@ -57,17 +70,18 @@
   <!-- MAIN -->
   <main class="main" id="catalog-main">
     <div class="topbar" role="toolbar" aria-label="Azioni catalogo">
-      <div style="display:flex;align-items:center;">
-        <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);" id="breadcrumb">Catalogo · Tutti gli articoli</div>
-        <div id="collectionActions" style="display:none; gap:6px; margin-left:12px;">
-          <button class="btn-ghost" id="btnEditCollection" style="padding:2px 8px; font-size:11px;">Modifica</button>
-          <button class="btn-ghost" id="btnDeleteCollection" style="padding:2px 8px; font-size:11px; color:var(--coral);">Elimina</button>
+      <!-- Hamburger mobile (iniettato da pwa.js) -->
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+        <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="breadcrumb">Catalogo · Tutti gli articoli</div>
+        <div id="collectionActions" style="display:none; gap:6px; margin-left:4px;">
+          <button class="btn-ghost topbar-hide-mobile" id="btnEditCollection" style="padding:2px 8px; font-size:11px;">Modifica</button>
+          <button class="btn-ghost topbar-hide-mobile" id="btnDeleteCollection" style="padding:2px 8px; font-size:11px; color:var(--coral);">Elimina</button>
         </div>
       </div>
-      <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);margin-left:12px;" id="articleCount"></div>
-      <div style="margin-left:auto;display:flex;gap:8px;">
-        <button class="btn-ghost" id="btnExport">Esporta</button>
-        <button class="btn-primary" id="btnNewArticleTop">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text-muted);" id="articleCount" aria-live="polite"></div>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <button class="btn-ghost topbar-hide-mobile" id="btnExport">Esporta</button>
+        <button class="btn-primary topbar-hide-mobile" id="btnNewArticleTop">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Nuovo Articolo
         </button>
@@ -141,5 +155,6 @@
 
 <script src="config.js"></script>
 <script type="module" src="js/catalog.js"></script>
+<script type="module" src="js/pwa.js"></script>
 </body>
 </html>

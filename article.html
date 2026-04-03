@@ -2,12 +2,22 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>De Simone OS — Modifica Articolo</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1A1814">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="De Simone">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile.css">
   <style>
     .editor-section {
       background: rgba(255,255,255,0.03);
@@ -54,7 +64,7 @@
       </div>
     </div>
 
-    <div style="max-width: 720px; margin: 40px auto; padding-bottom: 80px;">
+    <div style="max-width: 720px; margin: 40px auto; padding: 0 16px 120px; " class="editor-content">
       <h1 style="font-family:var(--serif); font-size:28px; margin-bottom:8px;" id="headerName">Modifica Articolo</h1>
       <p style="font-family:var(--mono); fill:var(--text-muted); font-size:12px; margin-bottom:32px; color:var(--text-muted);" id="headerSku">Caricamento...</p>
 
@@ -150,5 +160,6 @@
 
 <script src="config.js"></script>
 <script type="module" src="js/article.js"></script>
+<script type="module" src="js/pwa.js"></script>
 </body>
 </html>

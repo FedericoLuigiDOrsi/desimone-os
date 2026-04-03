@@ -2,6 +2,7 @@
 import { supabase, requireAuth, getCollections, getArticles, subscribeToArticleStatus, signOut } from './supabase.js'
 import { formatPrice, statusLabel, statusClass, getCoverPhoto, showToast, debounce } from './utils.js'
 import { openArticleModal } from './article-form.js'
+import { initMobileNav, initHamburger, addDetailPanelCloseBtn, closeDrawer } from './pwa.js'
 
 window.signOutUser = signOut
 
@@ -16,6 +17,14 @@ async function init() {
   await loadArticles()
   setupRealtime()
   setupListeners()
+
+  // Mobile PWA
+  initHamburger()
+  addDetailPanelCloseBtn()
+  initMobileNav({
+    onNewArticle: () => document.getElementById('btnNewArticleTop')?.click(),
+    onOpenDrawer: () => {} // già gestito da initMobileNav
+  })
 }
 
 async function loadCollections() {
@@ -44,6 +53,9 @@ async function loadCollections() {
     item.classList.add('active')
     document.getElementById('breadcrumb').textContent = `Catalogo · ${item.dataset.collectionName}`
     renderGrid(allArticles.filter(a => !currentCollectionId || a.collection_id === currentCollectionId))
+
+    // Chiude il drawer su mobile dopo la selezione
+    closeDrawer()
   })
 }
 
