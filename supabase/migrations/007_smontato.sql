@@ -44,8 +44,4 @@ CREATE POLICY "raw_items_select" ON raw_items FOR SELECT USING (deleted_at IS NU
 CREATE POLICY "raw_items_insert" ON raw_items FOR INSERT WITH CHECK (get_user_role() IN ('admin', 'staff'));
 CREATE POLICY "raw_items_update" ON raw_items FOR UPDATE USING (get_user_role() IN ('admin', 'staff'));
 
--- Seed categorie di default
-INSERT INTO raw_categories (name, slug, sort_order) VALUES
-  ('Pallini',   'pallini',   1),
-  ('Cannette',  'cannette',  2),
-  ('Sassolini', 'sassolini', 3);
+
