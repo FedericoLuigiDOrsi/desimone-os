@@ -35,7 +35,7 @@ export function initMobileNav({ onNewArticle, onOpenDrawer } = {}) {
   nav.className = 'mobile-nav'
   nav.setAttribute('aria-label', 'Navigazione mobile')
   nav.innerHTML = `
-    <a href="/catalog.html" class="mobile-nav-item ${isCatalog ? 'active' : ''}" aria-label="Montato">
+    <a href="catalog.html" class="mobile-nav-item ${isCatalog ? 'active' : ''}" aria-label="Montato">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
         <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
         <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
@@ -43,7 +43,7 @@ export function initMobileNav({ onNewArticle, onOpenDrawer } = {}) {
       Montato
     </a>
 
-    <a href="/smontato.html" class="mobile-nav-item ${isSmontato ? 'active' : ''}" aria-label="Smontato">
+    <a href="smontato.html" class="mobile-nav-item ${isSmontato ? 'active' : ''}" aria-label="Smontato">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
         <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
       </svg>
