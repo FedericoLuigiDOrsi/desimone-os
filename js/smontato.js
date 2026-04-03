@@ -27,7 +27,7 @@ async function loadCategories() {
   allCategories = await getRawCategories()
   const list = document.getElementById('categoryList')
 
-  list.innerHTML = renderCategoryItem({ id: null, name: 'Tutti i pezzi' }, true)
+  list.innerHTML = renderCategoryItem({ id: null, name: 'Tutti i fili' }, true)
   allCategories.forEach(c => { list.innerHTML += renderCategoryItem(c, false) })
 
   list.addEventListener('click', e => {
@@ -63,7 +63,7 @@ function renderCategoryItem(c, isActive) {
 
 async function loadItems() {
   allItems = await getRawItems()
-  document.getElementById('itemCount').textContent = `${allItems.length} pezzi`
+  document.getElementById('itemCount').textContent = `${allItems.length} fili`
   renderGrid(allItems)
 }
 
@@ -90,10 +90,10 @@ function renderGrid(items) {
       grid.innerHTML = `<div style="grid-column:1/-1;padding:64px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;">
         <svg style="width:48px;height:48px;color:rgba(201,168,76,0.5);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
         <div style="font-family:var(--serif);font-size:22px;color:white;">Il tuo magazzino è vuoto</div>
-        <div style="font-family:var(--editorial);font-size:14px;color:var(--text-muted);max-width:300px;">Per iniziare a inserire i pezzi smontati, crea la tua prima Categoria dalla barra laterale (es. Pallini, Cannette, ecc).</div>
+        <div style="font-family:var(--editorial);font-size:14px;color:var(--text-muted);max-width:300px;">Per iniziare a inserire i fili smontati, crea la tua prima Categoria dalla barra laterale (es. Pallini, Cannette, ecc).</div>
       </div>`
     } else {
-      grid.innerHTML = `<div style="grid-column:1/-1;padding:48px;text-align:center;font-family:var(--serif);font-size:18px;color:var(--text-muted);">Nessun pezzo trovato</div>`
+      grid.innerHTML = `<div style="grid-column:1/-1;padding:48px;text-align:center;font-family:var(--serif);font-size:18px;color:var(--text-muted);">Nessun filo trovato</div>`
     }
     return
   }
@@ -113,6 +113,7 @@ function renderGrid(items) {
           : ''}
 
         <div class="raw-item-category">${catName}</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">${item.sku || 'N/D'}</div>
         <div class="raw-item-size">${item.size || '—'}</div>
 
         <div class="raw-item-badges">
@@ -123,7 +124,7 @@ function renderGrid(items) {
         <div class="raw-item-stock-row">
           <div>
             <div class="raw-item-stock-num" id="stock-${item.id}" style="${stockColor}">${item.stock}</div>
-            <div class="raw-item-stock-label">pezzi disponibili</div>
+            <div class="raw-item-stock-label">fili disponibili</div>
           </div>
         </div>
 
@@ -373,13 +374,13 @@ function setupListeners() {
 
   // Elimina categoria
   document.getElementById('btnDeleteCategory')?.addEventListener('click', async () => {
-    if (!confirm('ATTENZIONE: Eliminando questa categoria, tutti i pezzi al suo interno verranno rimossi. Continuare?')) return
+    if (!confirm('ATTENZIONE: Eliminando questa categoria, tutti i fili al suo interno verranno rimossi. Continuare?')) return
     try {
       await deleteRawCategory(currentCategoryId)
       showToast('Categoria eliminata')
       currentCategoryId = null
       document.getElementById('categoryActions').style.display = 'none'
-      document.getElementById('breadcrumb').textContent = 'Smontato · Tutti i pezzi'
+      document.getElementById('breadcrumb').textContent = 'Smontato · Tutti i fili'
       await refresh()
     } catch (err) { showToast('Errore: ' + err.message) }
   })
@@ -387,16 +388,21 @@ function setupListeners() {
   // Salva categoria
   document.getElementById('btnSaveCategory').addEventListener('click', async () => {
     const name = document.getElementById('f_cat_name').value.trim()
+    let skuPrefix = document.getElementById('f_cat_sku').value.trim().toUpperCase()
+    
     if (!name) { showToast('Inserisci un nome per la categoria'); return }
+    if (!skuPrefix || skuPrefix.length < 2) { showToast('Inserisci un prefisso SKU (almeno 2 lettere)'); return }
+
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    
     try {
       if (isEditingCategory) {
         const { supabase } = await import('./supabase.js')
-        await supabase.from('raw_categories').update({ name, slug }).eq('id', currentCategoryId)
+        await supabase.from('raw_categories').update({ name, slug, sku_prefix: skuPrefix }).eq('id', currentCategoryId)
         showToast('Categoria aggiornata')
       } else {
         const { insertRawCategory } = await import('./supabase.js')
-        await insertRawCategory({ name, slug })
+        await insertRawCategory({ name, slug, sku_prefix: skuPrefix })
         showToast('Categoria creata')
       }
       document.getElementById('categoryModal').classList.remove('open')

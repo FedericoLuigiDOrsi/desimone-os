@@ -1,4 +1,4 @@
-// js/raw-form.js — Modale inserimento/modifica pezzo smontato
+// js/raw-form.js — Modale inserimento/modifica filo smontato
 import { insertRawItem, updateRawItem, uploadRawPhoto } from './supabase.js'
 import { showToast } from './utils.js'
 import { initPhotoUpload } from './photo-upload.js'
@@ -20,8 +20,8 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
     <div class="modal" style="max-width:560px;">
       <div class="modal-header">
         <div>
-          <div class="modal-eyebrow">Smontato · ${isEdit ? 'Modifica' : 'Nuovo'} pezzo</div>
-          <div class="modal-title" id="rawItemModalTitle">${isEdit ? (item.raw_categories?.name || 'Pezzo') : 'Inserimento Pezzo'}</div>
+          <div class="modal-eyebrow">Smontato · ${isEdit ? 'Modifica' : 'Nuovo'} filo</div>
+          <div class="modal-title" id="rawItemModalTitle">${isEdit ? (item.raw_categories?.name || 'Filo') : 'Inserimento Filo'}</div>
         </div>
         <button style="background:none;border:none;cursor:pointer;color:var(--text-muted);padding:4px;"
                 onclick="document.getElementById('rawItemModal').classList.remove('open')">
@@ -136,7 +136,7 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
       </div>
 
       <div class="modal-footer">
-        <span style="font-family:var(--editorial);font-size:12px;color:var(--text-muted);font-style:italic;" id="rstepLabel">Step 1 di 3 — Identità pezzo</span>
+        <span style="font-family:var(--editorial);font-size:12px;color:var(--text-muted);font-style:italic;" id="rstepLabel">Step 1 di 3 — Identità filo</span>
         <div style="display:flex;gap:8px;">
           <button class="btn-ghost" id="rbtnBack" style="display:none;">← Indietro</button>
           <button class="btn-primary" id="rbtnNext">Avanti →</button>
@@ -149,7 +149,7 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
   requestAnimationFrame(() => modal.classList.add('open'))
 
   let step = 1
-  const stepLabels = ['Identità pezzo', 'Qualità & Stock', 'Foto prodotto']
+  const stepLabels = ['Identità filo', 'Qualità & Stock', 'Foto prodotto']
 
   // Inizializza photo uploader allo step 3
   const step3El = document.getElementById('rstep3Content')
@@ -164,7 +164,7 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
     document.getElementById('rstepLabel').textContent = `Step ${step} di 3 — ${stepLabels[step - 1]}`
     document.getElementById('rbtnBack').style.display = step > 1 ? '' : 'none'
     document.getElementById('rbtnNext').textContent = step === 3
-      ? (isEdit ? 'Salva Modifiche ✓' : 'Salva Pezzo ✓')
+      ? (isEdit ? 'Salva Modifiche ✓' : 'Salva Filo ✓')
       : 'Avanti →'
     if (step === 2) updatePreview()
   }
@@ -287,10 +287,10 @@ async function submitRawItem(isEdit, existingId) {
     let savedItem
     if (isEdit) {
       savedItem = await updateRawItem(existingId, fields)
-      showToast('Pezzo aggiornato')
+      showToast('Filo aggiornato')
     } else {
       savedItem = await insertRawItem(fields)
-      showToast('Pezzo inserito')
+      showToast('Filo inserito')
     }
 
     // Upload foto (no pipeline — solo storage + DB)
@@ -306,7 +306,7 @@ async function submitRawItem(isEdit, existingId) {
   } catch (err) {
     console.error(err)
     showToast('Errore: ' + err.message)
-    btn.textContent = isEdit ? 'Salva Modifiche ✓' : 'Salva Pezzo ✓'
+    btn.textContent = isEdit ? 'Salva Modifiche ✓' : 'Salva Filo ✓'
     btn.disabled = false
   }
 }

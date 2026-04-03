@@ -80,7 +80,7 @@
   <main class="main" id="smontato-main">
     <div class="topbar" role="toolbar" aria-label="Azioni smontato">
       <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-        <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="breadcrumb">Smontato · Tutti i pezzi</div>
+        <div style="font-family:var(--editorial);font-size:13px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="breadcrumb">Smontato · Tutti i fili</div>
         <div id="categoryActions" style="display:none; gap:6px; margin-left:4px;">
           <button class="btn-ghost topbar-hide-mobile" id="btnEditCategory" style="padding:2px 8px; font-size:11px;">Modifica</button>
           <button class="btn-ghost topbar-hide-mobile" id="btnDeleteCategory" style="padding:2px 8px; font-size:11px; color:var(--coral);">Elimina</button>
@@ -90,12 +90,12 @@
       <div style="display:flex;gap:8px;flex-shrink:0;">
         <button class="btn-primary topbar-hide-mobile" id="btnNewItem">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Nuovo Pezzo
+          Nuovo Filo
         </button>
       </div>
     </div>
     <div class="catalog-area">
-      <div id="itemsGrid" role="list" aria-label="Pezzi smontati" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
+      <div id="itemsGrid" role="list" aria-label="Fili smontati" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;"></div>
     </div>
   </main>
 
@@ -117,7 +117,14 @@
       <div class="form-row full">
         <div class="form-field">
           <label class="field-label">Nome categoria <span class="field-required">*</span></label>
-          <input type="text" class="field-input" id="f_cat_name" placeholder="es. Rami, Cabochon…">
+          <input type="text" class="field-input" id="f_cat_name" placeholder="es. Pallini, Cannette…">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-field">
+          <label class="field-label">Codice identificativo (SKU)<span class="field-required">*</span></label>
+          <input type="text" class="field-input" id="f_cat_sku" maxlength="3" style="text-transform:uppercase;font-family:var(--mono);" placeholder="es. PAL">
+          <span style="font-family:var(--editorial);font-size:11px;color:var(--text-muted);margin-top:4px;display:block;">Comporrà il codice SKU, es: SM-PAL-00001</span>
         </div>
       </div>
     </div>
