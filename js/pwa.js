@@ -28,31 +28,39 @@ export function initMobileNav({ onNewArticle, onOpenDrawer } = {}) {
   // Inietta bottom nav se non presente
   if (document.querySelector('.mobile-nav')) return
 
-  const isCatalog = window.location.pathname.includes('catalog')
+  const isCatalog = window.location.pathname.includes('catalog') || window.location.pathname === '/'
+  const isSmontato = window.location.pathname.includes('smontato')
 
   const nav = document.createElement('nav')
   nav.className = 'mobile-nav'
   nav.setAttribute('aria-label', 'Navigazione mobile')
   nav.innerHTML = `
-    <a href="/catalog.html" class="mobile-nav-item ${isCatalog ? 'active' : ''}" aria-label="Catalogo">
+    <a href="/catalog.html" class="mobile-nav-item ${isCatalog ? 'active' : ''}" aria-label="Montato">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
         <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
         <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
       </svg>
-      Catalogo
+      Montato
     </a>
 
-    <button class="mobile-fab" id="mobileNewArticleBtn" aria-label="Nuovo articolo">
+    <a href="/smontato.html" class="mobile-nav-item ${isSmontato ? 'active' : ''}" aria-label="Smontato">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+      Smontato
+    </a>
+
+    <button class="mobile-fab" id="mobileNewArticleBtn" aria-label="Nuovo elemento">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
       </svg>
     </button>
 
-    <button class="mobile-nav-item" id="mobileCollectionsBtn" aria-label="Collezioni">
+    <button class="mobile-nav-item" id="mobileCollectionsBtn" aria-label="Categorie">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
         <path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"/><path d="M12 3v18"/>
       </svg>
-      Collezioni
+      Filtri
     </button>
   `
   document.body.appendChild(nav)
