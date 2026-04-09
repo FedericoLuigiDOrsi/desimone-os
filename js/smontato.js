@@ -85,7 +85,7 @@ function getColorClass(color) {
 function getQualityClass(quality) {
   if (!quality) return ''
   const q = quality.toLowerCase()
-  if (q.includes('prima') || q.includes('extra') || q.includes('top')) return 'quality-top'
+  if (q === 'i' || q.includes('extra') || q.includes('top')) return 'quality-top'
   return ''
 }
 

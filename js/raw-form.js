@@ -84,7 +84,7 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
               <label class="field-label">Colore <span class="field-required">*</span></label>
               <select class="field-input field-select" id="rf_color">
                 <option value="">Seleziona colore…</option>
-                ${['Corallo Moro', 'Corallo Rosso del Mediterraneo', 'Corallo Rosa', 'Corallo Sciacca', 'Corallo Bianco', 'Altro'].map(c => 
+                ${['Corallo Rosso del Mediterraneo', 'Corallo Rosa', 'Corallo Sciacca', 'Corallo Bianco', 'Altro'].map(c => 
                   `<option value="${c}" ${item?.color === c ? 'selected' : ''}>${c}</option>`
                 ).join('')}
               </select>
@@ -93,7 +93,7 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
               <label class="field-label">Qualità <span class="field-required">*</span></label>
               <select class="field-input field-select" id="rf_quality">
                 <option value="">Seleziona qualità…</option>
-                ${['Prima', 'Seconda', 'Terza'].map(q => 
+                ${['I', 'II', 'III'].map(q => 
                   `<option value="${q}" ${item?.quality === q ? 'selected' : ''}>${q}</option>`
                 ).join('')}
               </select>
