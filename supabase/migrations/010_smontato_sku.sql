@@ -3,14 +3,14 @@
 -- ============================================================
 
 -- 1. Aggiungiamo sku_prefix alla categoria
-ALTER TABLE raw_categories ADD COLUMN sku_prefix varchar(3);
+ALTER TABLE raw_categories ADD COLUMN IF NOT EXISTS sku_prefix varchar(3);
 
 -- Per le categorie esistenti (qualora ce ne fossero), impostiamo un prefisso generico basato sul nome, poi lo forziamo a non nullo
 UPDATE raw_categories SET sku_prefix = UPPER(SUBSTRING(slug FROM 1 FOR 3)) WHERE sku_prefix IS NULL;
 ALTER TABLE raw_categories ALTER COLUMN sku_prefix SET NOT NULL;
 
 -- 2. Aggiungiamo lo SKU al singolo raw_item
-ALTER TABLE raw_items ADD COLUMN sku text UNIQUE;
+ALTER TABLE raw_items ADD COLUMN IF NOT EXISTS sku text UNIQUE;
 
 -- 3. Sequenza univoca per i raw_items
 CREATE SEQUENCE IF NOT EXISTS raw_item_sku_seq;
@@ -51,6 +51,7 @@ BEGIN
 END;
 $$;
 
+DROP TRIGGER IF EXISTS raw_items_set_sku_trigger ON raw_items;
 CREATE TRIGGER raw_items_set_sku_trigger
   BEFORE INSERT ON raw_items
   FOR EACH ROW
