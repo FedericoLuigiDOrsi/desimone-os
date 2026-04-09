@@ -271,17 +271,15 @@
   background: white;
   border-radius: 4px;
   padding: 16px;
-  cursor: pointer;
   border: 1px solid transparent;
-  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  transition: box-shadow 0.18s, border-color 0.18s;
   animation: fadeUp 0.35s ease both;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: relative;
 }
 .raw-item-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(26,24,20,0.10);
   border-color: var(--ivory-dark);
 }
 

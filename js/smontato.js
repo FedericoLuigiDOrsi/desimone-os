@@ -145,17 +145,13 @@ function renderGrid(items) {
       </div>`
   }).join('')
 
-  // Click card → modale modifica
-  grid.querySelectorAll('.raw-item-card').forEach(card => {
-    card.addEventListener('click', e => {
-      if (e.target.closest('.raw-movimento-btn')) return
+  // Click bottone modifica (penna) → modale modifica
+  grid.querySelectorAll('.raw-edit-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation()
+      const card = btn.closest('.raw-item-card')
       const item = allItems.find(x => x.id === card.dataset.itemId)
       if (item) openRawItemModal({ item, categories: allCategories, onSuccess: refresh })
-    })
-    card.addEventListener('keydown', e => {
-      if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.raw-movimento-btn')) {
-        e.preventDefault(); card.click()
-      }
     })
   })
 
