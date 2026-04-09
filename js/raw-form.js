@@ -52,12 +52,20 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
               </select>
             </div>
           </div>
-          <div class="form-row full">
+          <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Dimensione <span style="color:var(--text-muted);font-style:italic;">— opzionale</span></label>
-              <input type="text" class="field-input" id="rf_size"
-                     placeholder="es. 4mm, Grande, 18cm, Piccolo…"
-                     value="${item?.size || ''}">
+              <label class="field-label">Dimensione (mm)</label>
+              <div style="position:relative;display:flex;align-items:center;">
+                <input type="number" class="field-input" id="rf_size" min="0" step="0.1" value="${item?.size ? parseFloat(item.size) : ''}" style="padding-right:36px;">
+                <span style="position:absolute;right:12px;font-family:var(--editorial);font-size:12px;color:var(--text-muted);">mm</span>
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Peso totale (g)</label>
+              <div style="position:relative;display:flex;align-items:center;">
+                <input type="number" class="field-input" id="rf_weight" min="0" step="0.01" value="${item?.weight || ''}" style="padding-right:30px;">
+                <span style="position:absolute;right:12px;font-family:var(--editorial);font-size:12px;color:var(--text-muted);">g</span>
+              </div>
             </div>
           </div>
           <div class="form-row full">
@@ -73,25 +81,30 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
         <div id="rstep2Content" style="display:none;">
           <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Colore</label>
-              <input type="text" class="field-input" id="rf_color"
-                     placeholder="es. Rosso, Rosa, Bianco…"
-                     value="${item?.color || ''}">
+              <label class="field-label">Colore <span class="field-required">*</span></label>
+              <select class="field-input field-select" id="rf_color">
+                <option value="">Seleziona colore…</option>
+                ${['Corallo Moro', 'Corallo Rosso del Mediterraneo', 'Corallo Rosa', 'Corallo Sciacca', 'Corallo Bianco', 'Altro'].map(c => 
+                  `<option value="${c}" ${item?.color === c ? 'selected' : ''}>${c}</option>`
+                ).join('')}
+              </select>
             </div>
             <div class="form-field">
-              <label class="field-label">Qualità</label>
-              <input type="text" class="field-input" id="rf_quality"
-                     placeholder="es. Prima scelta, Extra, Seconda…"
-                     value="${item?.quality || ''}">
+              <label class="field-label">Qualità <span class="field-required">*</span></label>
+              <select class="field-input field-select" id="rf_quality">
+                <option value="">Seleziona qualità…</option>
+                ${['Prima', 'Seconda', 'Terza'].map(q => 
+                  `<option value="${q}" ${item?.quality === q ? 'selected' : ''}>${q}</option>`
+                ).join('')}
+              </select>
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row full">
             <div class="form-field">
-              <label class="field-label">Stock iniziale <span class="field-required">*</span></label>
+              <label class="field-label">Quantità (Stock iniziale) <span class="field-required">*</span></label>
               <input type="number" class="field-input" id="rf_stock"
                      min="0" step="1" value="${item?.stock ?? 0}">
             </div>
-            <div class="form-field"></div>
           </div>
 
           <!-- Anteprima card -->
@@ -173,12 +186,16 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
     const catSel = document.getElementById('rf_category')
     const catName = catSel.options[catSel.selectedIndex]?.text || '—'
     const size    = document.getElementById('rf_size').value || '—'
+    const wgt     = document.getElementById('rf_weight')?.value
     const color   = document.getElementById('rf_color')?.value || ''
     const quality = document.getElementById('rf_quality')?.value || ''
     const stock   = document.getElementById('rf_stock')?.value || '0'
+    
+    let sizeText = size !== '—' ? size + 'mm' : '—'
+    if (wgt) sizeText += ` (${wgt}g)`
 
     document.getElementById('rfp_cat').textContent  = catName
-    document.getElementById('rfp_size').textContent = size
+    document.getElementById('rfp_size').textContent = sizeText
     document.getElementById('rfp_badges').innerHTML = [
       color   ? `<span style="padding:2px 7px;border-radius:2px;font-family:var(--editorial);font-size:10px;background:var(--ivory-dark);color:var(--text-secondary);">${color}</span>` : '',
       quality ? `<span style="padding:2px 7px;border-radius:2px;font-family:var(--editorial);font-size:10px;background:rgba(201,168,76,0.15);color:#8B7330;">${quality}</span>` : ''
@@ -188,7 +205,7 @@ export function openRawItemModal({ item = null, categories = [], defaultCategory
     stockEl.style.color  = Number(stock) === 0 ? 'var(--coral)' : Number(stock) < 5 ? '#C9A84C' : 'var(--text-primary)'
   }
 
-  ;['rf_category', 'rf_size', 'rf_color', 'rf_quality', 'rf_stock'].forEach(id => {
+  ;['rf_category', 'rf_size', 'rf_weight', 'rf_color', 'rf_quality', 'rf_stock'].forEach(id => {
     document.getElementById(id)?.addEventListener('input', updatePreview)
     document.getElementById(id)?.addEventListener('change', updatePreview)
   })
@@ -277,10 +294,11 @@ async function submitRawItem(isEdit, existingId) {
   try {
     const fields = {
       category_id: document.getElementById('rf_category').value,
-      size:    document.getElementById('rf_size').value.trim()    || null,
-      color:   document.getElementById('rf_color').value.trim()   || null,
-      quality: document.getElementById('rf_quality').value.trim() || null,
+      size:    document.getElementById('rf_size').value ? document.getElementById('rf_size').value + 'mm' : null,
+      color:   document.getElementById('rf_color').value || null,
+      quality: document.getElementById('rf_quality').value || null,
       stock:   Number(document.getElementById('rf_stock').value)  || 0,
+      weight:  document.getElementById('rf_weight').value ? Number(document.getElementById('rf_weight').value) : 0,
       notes:   document.getElementById('rf_notes').value.trim()   || null,
     }
 

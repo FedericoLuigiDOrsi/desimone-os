@@ -9,6 +9,12 @@ let allCategories = []
 let currentCategoryId  = null
 let isEditingCategory  = false
 
+const CATEGORY_TYPES = [
+  { id: 'pallini', label: 'Pallini', prefix: 'PAL' },
+  { id: 'cannette', label: 'Cannette', prefix: 'CAN' },
+  { id: 'sassolini', label: 'Sassolini', prefix: 'SAS' }
+]
+
 async function init() {
   await loadCategories()
   await loadItems()
@@ -113,6 +119,9 @@ function renderGrid(items) {
           : ''}
 
         <div class="raw-item-category">${catName}</div>
+        <button class="raw-edit-btn" aria-label="Modifica filo" style="position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:4px;background:rgba(255,255,255,0.9);border:1px solid var(--ivory-dark);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </button>
         <div style="font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-bottom:4px;">${item.sku || 'N/D'}</div>
         <div class="raw-item-size">${item.size || '—'}</div>
 
@@ -354,11 +363,35 @@ function setupListeners() {
     openRawItemModal({ categories: allCategories, defaultCategoryId: currentCategoryId, onSuccess: refresh })
   })
 
+  // Popola la select delle categorie disponibili
+  const catSelect = document.getElementById('f_cat_name')
+  if (catSelect && catSelect.options.length <= 1) {
+    CATEGORY_TYPES.forEach(t => {
+      const opt = document.createElement('option')
+      opt.value = t.label
+      opt.textContent = t.label
+      opt.dataset.prefix = t.prefix
+      catSelect.appendChild(opt)
+    })
+    
+    // Auto-compila col prefisso
+    catSelect.addEventListener('change', e => {
+      const selectedOpt = catSelect.options[catSelect.selectedIndex]
+      if (selectedOpt && selectedOpt.dataset.prefix) {
+        document.getElementById('f_cat_sku').value = selectedOpt.dataset.prefix
+      } else {
+        document.getElementById('f_cat_sku').value = ''
+      }
+    })
+  }
+
   // Nuova categoria
   document.getElementById('btnNewCategory').addEventListener('click', () => {
     isEditingCategory = false
     document.getElementById('categoryModalTitle').textContent = 'Nuova Categoria'
     document.getElementById('f_cat_name').value = ''
+    document.getElementById('f_cat_sku').value = ''
+    document.getElementById('f_cat_sku').disabled = false
     document.getElementById('categoryModal').classList.add('open')
   })
 
@@ -369,6 +402,7 @@ function setupListeners() {
     isEditingCategory = true
     document.getElementById('categoryModalTitle').textContent = 'Modifica Categoria'
     document.getElementById('f_cat_name').value = cat.name
+    document.getElementById('f_cat_sku').value = cat.sku_prefix || ''
     document.getElementById('categoryModal').classList.add('open')
   })
 
@@ -410,18 +444,68 @@ function setupListeners() {
     } catch (err) { showToast('Errore: ' + err.message) }
   })
 
-  // Ricerca
-  document.getElementById('searchInput').addEventListener('input', debounce(e => {
-    const q = e.target.value.toLowerCase()
-    const filtered = allItems.filter(i =>
-      (i.size     || '').toLowerCase().includes(q) ||
-      (i.color    || '').toLowerCase().includes(q) ||
-      (i.quality  || '').toLowerCase().includes(q) ||
-      (i.raw_categories?.name || '').toLowerCase().includes(q) ||
-      (i.notes    || '').toLowerCase().includes(q)
-    )
+  // Filtri Avanzati
+  const applyFilters = () => {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim()
+    const fCat = document.getElementById('filterCategory')?.value
+    const fCol = document.getElementById('filterColor')?.value
+    const fQual = document.getElementById('filterQuality')?.value
+
+    const filtered = allItems.filter(i => {
+      // 1. Keyword search (OR tra vari campi)
+      let matchQ = true
+      if (q) {
+        matchQ = (
+          (i.size     || '').toLowerCase().includes(q) ||
+          (i.color    || '').toLowerCase().includes(q) ||
+          (i.quality  || '').toLowerCase().includes(q) ||
+          (i.raw_categories?.name || '').toLowerCase().includes(q) ||
+          (i.notes    || '').toLowerCase().includes(q) ||
+          (i.sku      || '').toLowerCase().includes(q)
+        )
+      }
+      
+      // 2. Dropdown filters (And)
+      let matchCat = true
+      if (fCat) matchCat = (i.category_id === fCat)
+
+      let matchCol = true
+      if (fCol) matchCol = (i.color === fCol)
+
+      let matchQual = true
+      if (fQual) matchQual = (i.quality === fQual)
+
+      return matchQ && matchCat && matchCol && matchQual
+    })
+    
     renderGrid(filtered)
-  }))
+  }
+
+  document.getElementById('searchInput').addEventListener('input', debounce(applyFilters))
+
+  document.getElementById('btnOpenFilters')?.addEventListener('click', () => {
+    // Aggiorna le categorie nel filtro
+    const catSel = document.getElementById('filterCategory')
+    if (catSel && catSel.options.length <= 1) {
+      allCategories.forEach(c => {
+        const o = document.createElement('option')
+        o.value = c.id
+        o.textContent = c.name
+        catSel.appendChild(o)
+      })
+    }
+    document.getElementById('filtersModal')?.classList.add('open')
+  })
+
+  document.getElementById('btnClearFilters')?.addEventListener('click', () => {
+    applyFilters()
+    document.getElementById('filtersModal')?.classList.remove('open')
+  })
+  
+  // Applica in tempo reale anche cambiando i dropdown
+  document.getElementById('filterCategory')?.addEventListener('change', applyFilters)
+  document.getElementById('filterColor')?.addEventListener('change', applyFilters)
+  document.getElementById('filterQuality')?.addEventListener('change', applyFilters)
 }
 
 init().catch(console.error)

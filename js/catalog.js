@@ -328,15 +328,79 @@ function setupListeners() {
     }
   })
 
-  document.getElementById('searchInput').addEventListener('input', debounce(e => {
-    const q = e.target.value.toLowerCase()
-    const filtered = allArticles.filter(a =>
-      a.name.toLowerCase().includes(q) ||
-      a.sku.toLowerCase().includes(q) ||
-      (a.collections?.name || '').toLowerCase().includes(q)
-    )
+  // Filtri Avanzati
+  const applyFilters = () => {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim()
+    const fColl = document.getElementById('filterCollection')?.value
+    const fType = document.getElementById('filterType')?.value
+    const fCol  = document.getElementById('filterColor')?.value
+
+    const filtered = allArticles.filter(a => {
+      // 1. Keyword search
+      let matchQ = true
+      if (q) {
+        matchQ = (
+          a.name.toLowerCase().includes(q) ||
+          a.sku.toLowerCase().includes(q) ||
+          (a.collections?.name || '').toLowerCase().includes(q) ||
+          (a.type || '').toLowerCase().includes(q) ||
+          (a.color || '').toLowerCase().includes(q)
+        )
+      }
+      
+      // 2. Dropdown filters (And)
+      let matchColl = true
+      if (fColl) matchColl = (a.collection_id === fColl)
+
+      let matchType = true
+      if (fType) matchType = (a.type === fType)
+
+      let matchCol = true
+      if (fCol) matchCol = (a.color === fCol)
+
+      return matchQ && matchColl && matchType && matchCol
+    })
+    
     renderGrid(filtered)
-  }))
+  }
+
+  document.getElementById('searchInput').addEventListener('input', debounce(applyFilters))
+
+  document.getElementById('btnOpenFilters')?.addEventListener('click', () => {
+    // Popola Collezioni
+    const colSel = document.getElementById('filterCollection')
+    if (colSel && colSel.options.length <= 1) {
+      allCollections.forEach(c => {
+        const o = document.createElement('option')
+        o.value = c.id
+        o.textContent = c.name
+        colSel.appendChild(o)
+      })
+    }
+    // Popola Tipi
+    const typeSel = document.getElementById('filterType')
+    if (typeSel && typeSel.options.length <= 1) {
+      const types = [...new Set(allArticles.map(a => a.type).filter(Boolean))]
+      types.forEach(t => {
+        const o = document.createElement('option')
+        o.value = t
+        o.textContent = t
+        typeSel.appendChild(o)
+      })
+    }
+    
+    document.getElementById('filtersModal')?.classList.add('open')
+  })
+
+  document.getElementById('btnClearFilters')?.addEventListener('click', () => {
+    applyFilters()
+    document.getElementById('filtersModal')?.classList.remove('open')
+  })
+  
+  // Applica in tempo reale
+  document.getElementById('filterCollection')?.addEventListener('change', applyFilters)
+  document.getElementById('filterType')?.addEventListener('change', applyFilters)
+  document.getElementById('filterColor')?.addEventListener('change', applyFilters)
 }
 
 init().catch(console.error)
