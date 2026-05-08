@@ -1,0 +1,21 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --color-black:    #0a0805;
+  --color-ash:      #1a1410;
+  --color-ember:    #c45010;
+  --color-gold:     #f0a040;
+  --color-cream:    #f5f0e8;
+  --color-white:    #ffffff;
+
+  --font-display:   'Cormorant Garamond', Georgia, serif;
+  --font-body:      'Satoshi', system-ui, sans-serif;
+
+  --section-pad:    clamp(4rem, 10vw, 8rem);
+  --content-max:    1200px;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--color-black); color: var(--color-cream); font-family: var(--font-body); overflow-x: hidden; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
