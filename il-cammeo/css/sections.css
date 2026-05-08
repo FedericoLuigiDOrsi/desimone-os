@@ -1,0 +1,42 @@
+.reveal-section {
+  padding: var(--section-pad) clamp(1.5rem, 6vw, 4rem);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered children — parent sets --delay on children via JS */
+.reveal-section.visible .stagger-child {
+  animation: stagger-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-inner {
+  display: grid;
+  gap: 2rem;
+}
+
+.section-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Full-bleed wrapper for edge-to-edge elements */
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(-1 * clamp(1.5rem, 6vw, 4rem));
+}
