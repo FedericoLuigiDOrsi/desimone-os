@@ -61,26 +61,21 @@ function renderModal() {
           </div>
           <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Nome articolo <span class="field-required">*</span></label>
-              <input type="text" class="field-input" id="f_name" placeholder="es. Bracciale Napoli">
-            </div>
-            <div class="form-field">
               <label class="field-label">Tipo prodotto <span class="field-required">*</span></label>
               <select class="field-select" id="f_type">
                 <option value="">Seleziona…</option>
-                ${['bracciale','collana','anello','orecchini','spilla','ciondolo','altro'].map(t => `<option value="${t}">${t.charAt(0).toUpperCase()+t.slice(1)}</option>`).join('')}
+                ${['bracciale', 'collana', 'anello', 'orecchini', 'spilla', 'ciondolo', 'altro'].map(t => `<option value="${t}">${t.charAt(0).toUpperCase() + t.slice(1)}</option>`).join('')}
               </select>
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row full">
             <div class="form-field">
-              <label class="field-label">Canale</label>
-              <select class="field-select" id="f_channel">
-                <option value="both">Retail + Ingrosso</option>
-                <option value="retail">Solo Retail</option>
-                <option value="wholesale">Solo Ingrosso</option>
-              </select>
+              <label class="field-label">Nome <span style="color:var(--text-muted);font-style:italic;">— opzionale</span></label>
+              <input type="text" class="field-input" id="f_name" placeholder="es. Fantasia, Mare, Etnico…">
+              <span class="field-error" style="display:none;" id="namePreview"></span>
             </div>
+          </div>
+          <div class="form-row full">
             <div class="form-field">
               <label class="field-label">SKU (anteprima)</label>
               <div class="sku-preview empty" id="skuPreview">—-—-—-###</div>
@@ -97,14 +92,14 @@ function renderModal() {
         <div id="step2Content" style="display:none;">
           <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Tipo corallo <span class="field-required">*</span></label>
+              <label class="field-label">Corallo <span class="field-required">*</span></label>
               <select class="field-select" id="f_coral">
                 <option value="">Seleziona…</option>
                 ${corals.map(m => `<option value="${m.id}" data-code="${m.code}">${m.name}</option>`).join('')}
               </select>
             </div>
             <div class="form-field">
-              <label class="field-label">Tipo metallo <span class="field-required">*</span></label>
+              <label class="field-label">Materiale montatura <span class="field-required">*</span></label>
               <select class="field-select" id="f_metal">
                 <option value="">Seleziona…</option>
                 ${metals.map(m => `<option value="${m.id}" data-code="${m.code}">${m.name}</option>`).join('')}
@@ -121,14 +116,10 @@ function renderModal() {
               <input type="number" class="field-input" id="f_price_wholesale" placeholder="0" step="1" min="0">
             </div>
           </div>
-          <div class="form-row triple">
+          <div class="form-row">
             <div class="form-field">
-              <label class="field-label">Stock retail</label>
-              <input type="number" class="field-input" id="f_stock_retail" placeholder="0" min="0">
-            </div>
-            <div class="form-field">
-              <label class="field-label">Stock ingrosso</label>
-              <input type="number" class="field-input" id="f_stock_wholesale" placeholder="0" min="0">
+              <label class="field-label">Stock</label>
+              <input type="number" class="field-input" id="f_stock" placeholder="0" min="0">
             </div>
             <div class="form-field">
               <label class="field-label">Peso (g)</label>
@@ -137,15 +128,15 @@ function renderModal() {
           </div>
           <div class="form-row triple">
             <div class="form-field">
-              <label class="field-label">Larghezza (mm)</label>
+              <label class="field-label">Larghezza (cm)</label>
               <input type="number" class="field-input" id="f_width" placeholder="—">
             </div>
             <div class="form-field">
-              <label class="field-label">Lunghezza (mm)</label>
+              <label class="field-label">Lunghezza (cm)</label>
               <input type="number" class="field-input" id="f_length" placeholder="—">
             </div>
             <div class="form-field">
-              <label class="field-label">Altezza (mm)</label>
+              <label class="field-label">Altezza (cm)</label>
               <input type="number" class="field-input" id="f_height" placeholder="—">
             </div>
           </div>
@@ -156,6 +147,18 @@ function renderModal() {
           <p style="font-family:var(--editorial);font-style:italic;font-size:13px;color:var(--text-muted);margin-bottom:16px;">
             Le foto raw verranno elaborate automaticamente: rimozione sfondo e generazione descrizioni in IT/EN/FR.
           </p>
+
+          <!-- Pulsante fotocamera — visibile solo su mobile via CSS -->
+          <label id="btnCameraMobile" class="btn-camera-mobile" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            Scatta Foto
+            <input type="file" accept="image/*" capture="environment" multiple
+                   style="position:absolute;opacity:0;width:0;height:0;" id="cameraInput">
+          </label>
+
           <div class="upload-zone">
             <svg style="width:40px;height:40px;margin:0 auto 12px;display:block;color:var(--text-muted);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             <div style="font-family:var(--editorial);font-size:14px;color:var(--text-secondary);margin-bottom:4px;">Trascina le foto qui o clicca per sfogliare</div>
@@ -181,12 +184,12 @@ function setupFormListeners() {
   const stepLabels = ['Identità articolo', 'Materiali & Prezzi', 'Foto prodotto']
 
   function updateStep() {
-    [1,2,3].forEach(i => {
+    [1, 2, 3].forEach(i => {
       document.getElementById(`step${i}Content`).style.display = i === step ? 'block' : 'none'
       const tab = document.getElementById(`tab${i}`)
       tab.className = 'step-tab' + (i === step ? ' active' : i < step ? ' done' : '')
     })
-    document.getElementById('stepLabel').textContent = `Step ${step} di 3 — ${stepLabels[step-1]}`
+    document.getElementById('stepLabel').textContent = `Step ${step} di 3 — ${stepLabels[step - 1]}`
     document.getElementById('btnBack').style.display = step > 1 ? '' : 'none'
     document.getElementById('btnNext').textContent = step === 3 ? 'Salva & Avvia Pipeline ✦' : 'Avanti →'
     updateSkuPreview()
@@ -209,6 +212,25 @@ function setupFormListeners() {
   document.getElementById('f_collection').addEventListener('change', updateSkuPreview)
   document.getElementById('f_coral')?.addEventListener('change', updateSkuPreview)
   document.getElementById('f_metal')?.addEventListener('change', updateSkuPreview)
+  document.getElementById('f_type')?.addEventListener('change', updateNamePreview)
+  document.getElementById('f_name')?.addEventListener('input', updateNamePreview)
+
+  function updateNamePreview() {
+    const collSel = document.getElementById('f_collection')
+    const collName = collSel.options[collSel.selectedIndex]?.text || ''
+    const pType = document.getElementById('f_type').value
+    const pTypeName = pType ? pType.charAt(0).toUpperCase() + pType.slice(1) : ''
+    const customName = document.getElementById('f_name')?.value.trim() || ''
+    if (!pTypeName && !collName) return
+    const preview = [pTypeName, collName, customName].filter(Boolean).join(' ')
+    const el = document.getElementById('namePreview')
+    if (el) {
+      el.textContent = preview ? `Anteprima: “${preview}”` : ''
+      el.style.display = preview ? 'block' : 'none'
+      el.style.color = 'var(--text-muted)'
+      el.style.fontStyle = 'italic'
+    }
+  }
 
   document.getElementById('btnNext').addEventListener('click', async () => {
     if (step < 3) {
@@ -227,7 +249,6 @@ function setupFormListeners() {
   function validateStep(s) {
     if (s === 1) {
       if (!document.getElementById('f_collection').value) { showToast('Seleziona una collezione'); return false }
-      if (!document.getElementById('f_name').value.trim()) { showToast('Inserisci il nome articolo'); return false }
       if (!document.getElementById('f_type').value) { showToast('Seleziona il tipo prodotto'); return false }
     }
     if (s === 2) {
@@ -262,23 +283,31 @@ function setupFormListeners() {
       const l = document.getElementById('f_length').value
       const h = document.getElementById('f_height').value
       const wt = document.getElementById('f_weight').value
-      if (w) measurements.width_mm = Number(w)
-      if (l) measurements.length_mm = Number(l)
-      if (h) measurements.height_mm = Number(h)
+      if (w) measurements.width_cm = Number(w)
+      if (l) measurements.length_cm = Number(l)
+      if (h) measurements.height_cm = Number(h)
       if (wt) measurements.weight_g = Number(wt)
+
+      const collSel = document.getElementById('f_collection')
+      const collName = collSel.options[collSel.selectedIndex].text
+      const pType = document.getElementById('f_type').value
+      const pTypeName = pType.charAt(0).toUpperCase() + pType.slice(1)
+      const customName = document.getElementById('f_name')?.value.trim() || ''
+      const dynamicName = [pTypeName, collName, customName].filter(Boolean).join(' ') +
+        (l ? ` ${l}cm` : '')
 
       const article = await insertArticle({
         collection_id: collId,
-        name: document.getElementById('f_name').value.trim(),
-        product_type: document.getElementById('f_type').value,
+        name: dynamicName,
+        product_type: pType,
         coral_material_id: coralId,
         metal_material_id: metalId,
         sku: skuData,
         price_retail: Number(document.getElementById('f_price_retail').value) || null,
         price_wholesale: Number(document.getElementById('f_price_wholesale').value) || null,
-        stock_retail: Number(document.getElementById('f_stock_retail').value) || 0,
-        stock_wholesale: Number(document.getElementById('f_stock_wholesale').value) || 0,
-        channel: document.getElementById('f_channel').value,
+        stock_retail: Number(document.getElementById('f_stock').value) || 0,
+        stock_wholesale: 0,
+        channel: 'both',
         notes: document.getElementById('f_notes').value.trim() || null,
         measurements: Object.keys(measurements).length ? measurements : null
       })
@@ -293,7 +322,7 @@ function setupFormListeners() {
       document.getElementById('articleModal').classList.remove('open')
       if (onSuccessCallback) onSuccessCallback(article)
 
-    } catch(e) {
+    } catch (e) {
       console.error(e)
       showToast('Errore durante il salvataggio: ' + e.message)
       btn.textContent = 'Salva & Avvia Pipeline ✦'

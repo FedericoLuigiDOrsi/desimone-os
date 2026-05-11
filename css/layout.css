@@ -37,12 +37,12 @@
 }
 
 .nav-item {
-  width: 44px; height: 44px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 8px;
-  color: var(--silver);
+  width: 48px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: 8px; padding: 6px 0;
+  color: var(--silver); text-decoration: none;
   transition: background 0.15s, color 0.15s;
-  cursor: pointer;
+  cursor: pointer; gap: 4px;
 }
 .nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
 .nav-item.active { background: var(--coral); color: white; }
@@ -51,6 +51,7 @@
   outline-offset: 2px;
 }
 .nav-item svg { width: 18px; height: 18px; }
+.nav-item-label { font-family: var(--editorial); font-size: 8px; letter-spacing: 0.5px; text-transform: uppercase; text-align: center; }
 
 .sidebar-bottom {
   padding: 16px 0;

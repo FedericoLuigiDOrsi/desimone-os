@@ -24,7 +24,7 @@ export async function signOut() {
 export async function getCollections() {
   const { data, error } = await supabase
     .from('collections')
-    .select('id, name, slug, channel, sort_order')
+    .select('id, name, slug, channel, sort_order, description_it, description_en')
     .is('deleted_at', null)
     .order('sort_order')
   if (error) throw error
@@ -49,7 +49,8 @@ export async function getArticles(collectionId = null) {
       collections(name, slug),
       coral:materials!coral_material_id(name, code),
       metal:materials!metal_material_id(name, code),
-      photos(id, public_url, is_cover, photo_type, sort_order)
+      photos(id, public_url, is_cover, photo_type, sort_order),
+      measurements
     `)
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
@@ -66,6 +67,30 @@ export async function insertArticle(fields) {
     .from('articles')
     .insert(fields)
     .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function updateArticle(id, fields) {
+  const { data, error } = await supabase
+    .from('articles')
+    .update({ ...fields, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function getArticleById(id) {
+  const { data, error } = await supabase
+    .from('articles')
+    .select(`
+      *,
+      collections(name, slug)
+    `)
+    .eq('id', id)
     .single()
   if (error) throw error
   return data
@@ -105,4 +130,103 @@ export function subscribeToArticleStatus(onUpdate) {
       table: 'articles'
     }, (payload) => onUpdate(payload.new))
     .subscribe()
+}
+
+// ── Smontato helpers ──────────────────────────────────────────
+
+export async function getRawCategories() {
+  const { data, error } = await supabase
+    .from('raw_categories')
+    .select('id, name, slug, sort_order')
+    .is('deleted_at', null)
+    .order('sort_order')
+  if (error) throw error
+  return data
+}
+
+export async function getRawItems(categoryId = null) {
+  let query = supabase
+    .from('raw_items')
+    .select('*, raw_categories(name, slug)')
+    .is('deleted_at', null)
+    .order('created_at', { ascending: false })
+  if (categoryId) query = query.eq('category_id', categoryId)
+  const { data, error } = await query
+  if (error) throw error
+  return data
+}
+
+export async function insertRawCategory(fields) {
+  const { data, error } = await supabase
+    .from('raw_categories')
+    .insert(fields)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function insertRawItem(fields) {
+  const { data, error } = await supabase
+    .from('raw_items')
+    .insert(fields)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function updateRawItem(id, fields) {
+  const { data, error } = await supabase
+    .from('raw_items')
+    .update({ ...fields, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteRawCategory(id) {
+  const delDate = new Date().toISOString()
+  // Soft-delete anche tutti i raw_items della categoria
+  await supabase.from('raw_items').update({ deleted_at: delDate }).eq('category_id', id)
+  const { error } = await supabase.from('raw_categories').update({ deleted_at: delDate }).eq('id', id)
+  if (error) throw error
+}
+
+export async function uploadRawPhoto(file, rawItemId, setCover = false) {
+  const ext = file.name.split('.').pop()
+  const path = `raw-items/${rawItemId}/${crypto.randomUUID()}.${ext}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('photos')
+    .upload(path, file, { contentType: file.type })
+  if (uploadError) throw uploadError
+
+  const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(path)
+
+  const { data, error } = await supabase
+    .from('raw_photos')
+    .insert({ raw_item_id: rawItemId, storage_path: path, public_url: publicUrl, is_cover: setCover })
+    .select()
+    .single()
+  if (error) throw error
+
+  // Aggiorna cover_url sul raw_item se è la prima foto / cover
+  if (setCover) {
+    await supabase.from('raw_items').update({ cover_url: publicUrl }).eq('id', rawItemId)
+  }
+
+  return data
+}
+
+export async function getRawItemPhotos(rawItemId) {
+  const { data, error } = await supabase
+    .from('raw_photos')
+    .select('*')
+    .eq('raw_item_id', rawItemId)
+    .order('sort_order')
+  if (error) throw error
+  return data
 }
